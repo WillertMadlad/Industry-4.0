@@ -1,0 +1,368 @@
+[
+    {
+        "id": "a11c9b64e1ebcacb",
+        "type": "tab",
+        "label": "MySQL",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "27e88abd.903cb6",
+        "type": "mqtt in",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "topic": "cardUID",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "8c683edd.80e8c",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 80,
+        "y": 60,
+        "wires": [
+            [
+                "21d48c74.8c4504",
+                "6c9128d8.15c838"
+            ]
+        ]
+    },
+    {
+        "id": "21d48c74.8c4504",
+        "type": "debug",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 330,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "6c9128d8.15c838",
+        "type": "json",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 230,
+        "y": 100,
+        "wires": [
+            [
+                "79eed74.603f228",
+                "4f245727.076df8",
+                "c03ef835.381a98",
+                "86861ba5.c9e728",
+                "e82067ce7963567e"
+            ]
+        ]
+    },
+    {
+        "id": "79eed74.603f228",
+        "type": "debug",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 430,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "4f245727.076df8",
+        "type": "change",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.uid",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 200,
+        "wires": [
+            [
+                "3444d635.70bcaa"
+            ]
+        ]
+    },
+    {
+        "id": "c03ef835.381a98",
+        "type": "change",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.timestamp",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 260,
+        "wires": [
+            [
+                "3444d635.70bcaa"
+            ]
+        ]
+    },
+    {
+        "id": "86861ba5.c9e728",
+        "type": "change",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.bitSize",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 320,
+        "wires": [
+            [
+                "3444d635.70bcaa"
+            ]
+        ]
+    },
+    {
+        "id": "169c2f6f.3664b1",
+        "type": "function",
+        "z": "a11c9b64e1ebcacb",
+        "name": "Node-RED MySQL",
+        "func": "var data = msg.payload.split(\",\");\nvar uid = data[0];\nvar timestamp = new Date().toString().substring(0,25);\nvar bitSize = data[2];\nvar temp = data[3].substring(0,5);\nvar out = \"INSERT INTO nodered.DataGris(ID,Timestamp,BitSize,Temp) VALUES('\"+uid+\"','\"+timestamp+\"','\"+bitSize+\"','\"+temp+\"')\";\nmsg.topic = out;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 420,
+        "wires": [
+            [
+                "658bece54fc7403e"
+            ]
+        ]
+    },
+    {
+        "id": "7ec6cd97.e24054",
+        "type": "join",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "mode": "custom",
+        "build": "string",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": ",",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 610,
+        "y": 340,
+        "wires": [
+            [
+                "169c2f6f.3664b1",
+                "4042b172cefc2e31"
+            ]
+        ]
+    },
+    {
+        "id": "63a251e0.c287d",
+        "type": "debug",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "3444d635.70bcaa",
+        "type": "batch",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "mode": "count",
+        "count": "4",
+        "overlap": 0,
+        "interval": 10,
+        "allowEmptySequence": false,
+        "topics": [],
+        "x": 470,
+        "y": 340,
+        "wires": [
+            [
+                "7ec6cd97.e24054"
+            ]
+        ]
+    },
+    {
+        "id": "658bece54fc7403e",
+        "type": "mysql",
+        "z": "a11c9b64e1ebcacb",
+        "mydb": "a403bfca4093fc65",
+        "name": "Datagris",
+        "x": 880,
+        "y": 420,
+        "wires": [
+            [
+                "63a251e0.c287d"
+            ]
+        ]
+    },
+    {
+        "id": "4042b172cefc2e31",
+        "type": "debug",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "e82067ce7963567e",
+        "type": "mlx-sensor",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "x": 430,
+        "y": 160,
+        "wires": [
+            [
+                "d099765925ed074f",
+                "30a34ec76f2ca77c"
+            ]
+        ]
+    },
+    {
+        "id": "d099765925ed074f",
+        "type": "change",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.object",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 380,
+        "wires": [
+            [
+                "3444d635.70bcaa"
+            ]
+        ]
+    },
+    {
+        "id": "30a34ec76f2ca77c",
+        "type": "debug",
+        "z": "a11c9b64e1ebcacb",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "8c683edd.80e8c",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "127.0.0.1",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "a403bfca4093fc65",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "nodered",
+        "tz": "",
+        "charset": "UTF8"
+    }
+]

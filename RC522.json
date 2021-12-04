@@ -1,0 +1,526 @@
+[
+    {
+        "id": "485ca5670a24aec3",
+        "type": "tab",
+        "label": "Node Red Dashboard",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "131ba0ab3ef71818",
+        "type": "function",
+        "z": "485ca5670a24aec3",
+        "name": "JSON to Object",
+        "func": "\n/* context: Node-RED giver en måde at gemme information, der kan deles mellem forskellige noder uden at bruge de beskeder, der passerer gennem et flow. Dette kaldes 'kontekst'.*/\n\nvar data = msg.payload.split(\",\");\nvar temp = data[1].substring(0,5);\ncontext.Name = data[0];\ncontext.LED = \"1\";\n\nif (temp <= \"38\" && temp >= \"29\" ){\n    context.Name += \" Godkendt\";\n    context.LED = \"1\";\n    }\nelse{\n    context.Name += \" ikke godkendt\";\n    context.LED = \"0\"; \n} \n\nif (context.LED == \"1\"){\n    context.LED_Red = \"0\";\n    context.LED_Green = \"1\";\n    }\nelse{\n    context.LED_Red = \"1\";\n    context.LED_Green = \"0\";    \n}  \n\nvar msg1 ={payload: context.Name};\nvar msg2 ={payload: context.LED_Green};\nvar msg3 ={payload: context.LED_Red};\nvar msg4 ={payload: temp};\n\nreturn [msg1,msg2,msg3,msg4];",
+        "outputs": 4,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 280,
+        "wires": [
+            [
+                "39b99643e0b3ca04",
+                "77dc7d4906ebd108"
+            ],
+            [
+                "a1e8b47ff3fca173",
+                "77dc7d4906ebd108"
+            ],
+            [
+                "0e3a379feed51d5f",
+                "01e31fca19b35992",
+                "2229eca03bc2ebc2",
+                "77dc7d4906ebd108"
+            ],
+            [
+                "2c5c90ddf1e87905"
+            ]
+        ],
+        "info": "//msg.payload = JSON.parse(msg.payload);"
+    },
+    {
+        "id": "a1e8b47ff3fca173",
+        "type": "rpi-gpio out",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "pin": "18",
+        "set": "",
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 560,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "9c395c0ce2a12b3f",
+        "type": "inject",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "props": [
+            {
+                "p": "payload",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "p": "topic",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 250,
+        "y": 500,
+        "wires": [
+            [
+                "a1e8b47ff3fca173",
+                "0e3a379feed51d5f"
+            ]
+        ]
+    },
+    {
+        "id": "0e3a379feed51d5f",
+        "type": "rpi-gpio out",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "pin": "17",
+        "set": "",
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 560,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "36da7d487a15f296",
+        "type": "ui_template",
+        "z": "485ca5670a24aec3",
+        "group": "bb09b35f.cd6fb",
+        "name": "",
+        "order": 2,
+        "width": "5",
+        "height": "4",
+        "format": "<html>\n\n<svg>\n<circle cx=\"40\" cy=\"40\" r=\"22\" style=\"stroke: white; stroke-width: 3; fill:{{msg.payload}};\"/>\n\n  <style>\n    .one { font: italic 20px sans-serif; fill: red;}\n    .two { font: bold 20px sans-serif; fill: white;}\n    .tree { font: italic 20px serif; fill: green;}\n    .four { font: bold 30px serif; fill: white;}\n  </style>\n  \n  <text x=\"40%\" y=\"30%\" class=\"four\">open the door</text>\n  <text x=\"20\" y=\"90\" class=\"one\">Rød =</text>\n  <text x=\"20\" y=\"105\" class=\"one\">Temperatur Ikke ok </text>\n  <text x=\"20\" y=\"120\" class=\"tree\">Grøn =</text>\n  <text x=\"20\" y=\"135\" class=\"tree\">Temperatur ok</text>\n  <text x=\"100\" y=\"150\" class=\"four\">IIoT</text>\n</svg>\n\n</html>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 660,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "01e31fca19b35992",
+        "type": "function",
+        "z": "485ca5670a24aec3",
+        "name": "dev/10",
+        "func": "var str = msg.payload;\nif (str == \"0\"){\n  msg =  { payload:\"lime\" };  \n}\nelse{\n  msg =  { payload:\"red\" }; \n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 470,
+        "y": 520,
+        "wires": [
+            [
+                "36da7d487a15f296"
+            ]
+        ]
+    },
+    {
+        "id": "39b99643e0b3ca04",
+        "type": "ui_text",
+        "z": "485ca5670a24aec3",
+        "group": "bb09b35f.cd6fb",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "name": "",
+        "label": "Status:",
+        "format": "<h1>{{msg.payload}}</h1>",
+        "layout": "row-spread",
+        "className": "",
+        "x": 560,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "d1e7d12b39049a32",
+        "type": "inject",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "props": [
+            {
+                "p": "payload",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "p": "topic",
+                "v": "",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 250,
+        "y": 560,
+        "wires": [
+            [
+                "01e31fca19b35992"
+            ]
+        ]
+    },
+    {
+        "id": "2229eca03bc2ebc2",
+        "type": "delay",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "outputs": 1,
+        "x": 220,
+        "y": 340,
+        "wires": [
+            [
+                "c426eefdd1ef8bb9"
+            ]
+        ]
+    },
+    {
+        "id": "c426eefdd1ef8bb9",
+        "type": "function",
+        "z": "485ca5670a24aec3",
+        "name": "JSON to Object",
+        "func": "context.LED_Red = \"1\";\ncontext.LED_Green = \"0\";    \ncontext.Name = \"\";\nvar msg1 ={payload: context.Name};\nvar msg2 ={payload: context.LED_Green};\nvar msg3 ={payload: context.LED_Red};\n\nreturn [msg1,msg2,msg3];",
+        "outputs": 3,
+        "noerr": 0,
+        "x": 240,
+        "y": 440,
+        "wires": [
+            [
+                "39b99643e0b3ca04",
+                "77dc7d4906ebd108"
+            ],
+            [
+                "a1e8b47ff3fca173",
+                "77dc7d4906ebd108"
+            ],
+            [
+                "01e31fca19b35992",
+                "0e3a379feed51d5f",
+                "77dc7d4906ebd108"
+            ]
+        ]
+    },
+    {
+        "id": "39b215a9930bbb94",
+        "type": "rc522",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "blockedFor": 5,
+        "x": 70,
+        "y": 40,
+        "wires": [
+            [
+                "1cd6f7b3222be7de",
+                "e1750241a2b822d0",
+                "36d05d509aae3e4f",
+                "2049a703bc36b3f5"
+            ]
+        ]
+    },
+    {
+        "id": "77dc7d4906ebd108",
+        "type": "debug",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 730,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "e1750241a2b822d0",
+        "type": "debug",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 250,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "1cd6f7b3222be7de",
+        "type": "mqtt out",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "topic": "cardUID",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8c683edd.80e8c",
+        "x": 240,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "bc292b0ee00a494f",
+        "type": "join",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "mode": "custom",
+        "build": "string",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": ",",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 490,
+        "y": 160,
+        "wires": [
+            [
+                "131ba0ab3ef71818",
+                "1758031c95c086db"
+            ]
+        ]
+    },
+    {
+        "id": "8f063e6a4fbba687",
+        "type": "batch",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "mode": "count",
+        "count": "2",
+        "overlap": 0,
+        "interval": 10,
+        "allowEmptySequence": false,
+        "topics": [],
+        "x": 370,
+        "y": 160,
+        "wires": [
+            [
+                "bc292b0ee00a494f"
+            ]
+        ]
+    },
+    {
+        "id": "cb051b01088bd9f5",
+        "type": "change",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.object",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 180,
+        "y": 180,
+        "wires": [
+            [
+                "8f063e6a4fbba687"
+            ]
+        ]
+    },
+    {
+        "id": "36d05d509aae3e4f",
+        "type": "change",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.uid",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 180,
+        "y": 140,
+        "wires": [
+            [
+                "8f063e6a4fbba687"
+            ]
+        ]
+    },
+    {
+        "id": "2c5c90ddf1e87905",
+        "type": "ui_text",
+        "z": "485ca5670a24aec3",
+        "group": "bb09b35f.cd6fb",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Temperatur",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 570,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "1758031c95c086db",
+        "type": "debug",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "420282c7e6bfe475",
+        "type": "inject",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "30",
+        "payloadType": "str",
+        "x": 90,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2049a703bc36b3f5",
+        "type": "mlx-sensor",
+        "z": "485ca5670a24aec3",
+        "name": "",
+        "x": 100,
+        "y": 260,
+        "wires": [
+            [
+                "cb051b01088bd9f5"
+            ]
+        ]
+    },
+    {
+        "id": "bb09b35f.cd6fb",
+        "type": "ui_group",
+        "name": "Temp check",
+        "tab": "ea73b14b.10a9",
+        "order": 1,
+        "disp": true,
+        "width": "5",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "8c683edd.80e8c",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "127.0.0.1",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "ea73b14b.10a9",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "order": 2
+    }
+]

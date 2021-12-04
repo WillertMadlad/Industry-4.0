@@ -1,0 +1,252 @@
+[
+    {
+        "id": "4fe39b7ecaf9fe39",
+        "type": "tab",
+        "label": "Ubidots",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "2403cd9b.1b5802",
+        "type": "function",
+        "z": "4fe39b7ecaf9fe39",
+        "name": "function",
+        "func": "var data = msg.payload.split(\",\");\nvar id = data[0].substring(0,3);\nvar temp = data[1];\n\nmsg.payload = {\"Temperatures\" : temp,\"ID\" : id};\nmsg.payload.ubidotsDeviceLabel = \"Machine\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 300,
+        "wires": [
+            [
+                "a52cd0b9.af8af",
+                "391d78a3.4a1418"
+            ]
+        ]
+    },
+    {
+        "id": "391d78a3.4a1418",
+        "type": "debug",
+        "z": "4fe39b7ecaf9fe39",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 470,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "a52cd0b9.af8af",
+        "type": "ubidots_out",
+        "z": "4fe39b7ecaf9fe39",
+        "name": "DataGris out",
+        "token": "BBFF-XeUbOSOVZX8kLvBsWxFRUbvyqq23cK",
+        "label_device": "",
+        "device_label": "Raspi-gris",
+        "tier": "educational",
+        "tls_checkbox": true,
+        "x": 470,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "fe6e3304bc182a10",
+        "type": "mqtt in",
+        "z": "4fe39b7ecaf9fe39",
+        "name": "",
+        "topic": "cardUID",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "8c683edd.80e8c",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 100,
+        "y": 40,
+        "wires": [
+            [
+                "fcccee20e4efcc38",
+                "fa355c99cb418547"
+            ]
+        ]
+    },
+    {
+        "id": "f650e3c066c9c06e",
+        "type": "change",
+        "z": "4fe39b7ecaf9fe39",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.uid",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 100,
+        "wires": [
+            [
+                "fa9dcf53af414e9f"
+            ]
+        ]
+    },
+    {
+        "id": "fcccee20e4efcc38",
+        "type": "mlx-sensor",
+        "z": "4fe39b7ecaf9fe39",
+        "name": "",
+        "x": 130,
+        "y": 120,
+        "wires": [
+            [
+                "ab32521bda805335"
+            ]
+        ]
+    },
+    {
+        "id": "ab32521bda805335",
+        "type": "change",
+        "z": "4fe39b7ecaf9fe39",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.object",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 140,
+        "wires": [
+            [
+                "fa9dcf53af414e9f"
+            ]
+        ]
+    },
+    {
+        "id": "fa9dcf53af414e9f",
+        "type": "batch",
+        "z": "4fe39b7ecaf9fe39",
+        "name": "",
+        "mode": "count",
+        "count": "2",
+        "overlap": 0,
+        "interval": 10,
+        "allowEmptySequence": false,
+        "topics": [],
+        "x": 140,
+        "y": 220,
+        "wires": [
+            [
+                "2eeb52a177e268e5"
+            ]
+        ]
+    },
+    {
+        "id": "2eeb52a177e268e5",
+        "type": "join",
+        "z": "4fe39b7ecaf9fe39",
+        "name": "",
+        "mode": "custom",
+        "build": "string",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": ",",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 270,
+        "y": 220,
+        "wires": [
+            [
+                "3c8fdc40a73b34e3",
+                "2403cd9b.1b5802"
+            ]
+        ]
+    },
+    {
+        "id": "3c8fdc40a73b34e3",
+        "type": "debug",
+        "z": "4fe39b7ecaf9fe39",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 530,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "fa355c99cb418547",
+        "type": "json",
+        "z": "4fe39b7ecaf9fe39",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 270,
+        "y": 40,
+        "wires": [
+            [
+                "f650e3c066c9c06e"
+            ]
+        ]
+    },
+    {
+        "id": "8c683edd.80e8c",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "127.0.0.1",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    }
+]
